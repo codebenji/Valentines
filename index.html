@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine's Special</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #800020;
+      color: white;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Memories */
+    .memories {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .memories.show { opacity: 1; }
+
+    .memory {
+      position: absolute;
+      width: 120px;
+      aspect-ratio: 3 / 4;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.45);
+      border: 2px solid rgba(255,255,255,0.18);
+      transform: scale(0.85);
+      transition: transform 0.7s ease;
+    }
+
+    .memories.show .memory {
+      transform: scale(1);
+    }
+
+    .memory img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .top-left { top: 6%; left: 6%; transform: rotate(-4deg); }
+    .top-right { top: 6%; right: 6%; transform: rotate(4deg); }
+    .mid-left { top: 35%; left: 4%; transform: rotate(2deg); }
+    .mid-right { top: 35%; right: 4%; transform: rotate(-2deg); }
+    .bottom-left { bottom: 6%; left: 6%; transform: rotate(4deg); }
+    .bottom-right { bottom: 6%; right: 6%; transform: rotate(-4deg); }
+
+    @media (max-width: 768px) {
+      .memory { width: 90px; }
+    }
+
+    .content {
+      z-index: 2;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 12px;
+    }
+
+    #gif {
+      width: 300px;
+      max-width: 92%;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+      transition: width 0.3s ease;
+    }
+
+    .btn-wrap {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    button {
+      font-size: 1.2em;
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 120px;
+    }
+
+    #yes-btn { background: #4CAF50; color: white; }
+    #no-btn { background: #ff4d4d; color: white; }
+
+    .pop { animation: pop 0.35s ease; }
+    @keyframes pop {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.15); }
+      70% { transform: scale(0.96); }
+      100% { transform: scale(1); }
+    }
+
+    .shake { animation: shake 0.35s; }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-6px); }
+      100% { transform: translateX(0); }
+    }
+
+    .rotate {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Memories -->
+  <div class="memories" id="memories">
+    <div class="memory top-left"><img src="image0.jpeg"></div>
+    <div class="memory top-right"><img src="image1.jpeg"></div>
+    <div class="memory mid-left"><img src="image3.jpeg"></div>
+    <div class="memory mid-right"><img src="image4.jpeg"></div>
+    <div class="memory bottom-left"><img src="image5.jpeg"></div>
+    <div class="memory bottom-right"><img src="image6.jpeg"></div>
+  </div>
+
+  <!-- Main content -->
+  <div class="content">
+    <h1 id="question">Ma you be my Valentine?</h1>
+
+    <img
+      id="gif"
+      src="https://media1.tenor.com/m/ptBL68XAxX8AAAAd/begging.gif"
+      alt="gif"
+    >
+
+    <div class="btn-wrap">
+      <button id="yes-btn" onclick="yesClicked()">Yes</button>
+      <button id="no-btn" onclick="noClicked()">No</button>
+    </div>
+  </div>
+
+  <script>
+    let noClicks = 0;
+    let yesClicks = 0;
+
+    const beggingGif = "https://media1.tenor.com/m/ptBL68XAxX8AAAAd/begging.gif";
+    const loveGif =
+      "https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyc2FnOThoNmt2Z2NseXZtNXk5NjVlMGRtY3pyZmM1YWpxMG43bWM3bSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Ta1QurA2fdu36/200w.gif";
+
+    const noMessages = [
+      "Eh eh… you don’t love me? 😭💔",
+      "Ayy nahhh don’t violate me like that 😩",
+      "Ma come on allow me please 😭🙏",
+      "You’re doing me dirty fr… my Valentine 😔💘",
+      "Big boss this one is destiny 😭💍"
+    ];
+
+    const yesMessages = [
+      "Hold on… you’re saying yes? 👀💖",
+      "Nahhh this is mad 😭 you’re really my Valentine 🥰",
+      "I LOVE YOU!!! <span class='rotate'>😂</span>💘"
+    ];
+
+    function popGif() {
+      const gif = document.getElementById("gif");
+      gif.classList.remove("pop");
+      void gif.offsetWidth;
+      gif.classList.add("pop");
+    }
+
+    function shakeNo() {
+      const noBtn = document.getElementById("no-btn");
+      noBtn.classList.remove("shake");
+      void noBtn.offsetWidth;
+      noBtn.classList.add("shake");
+    }
+
+    function noClicked() {
+      noClicks++;
+      const index = Math.min(noClicks - 1, noMessages.length - 1);
+      document.getElementById("question").innerHTML = noMessages[index];
+
+      const gif = document.getElementById("gif");
+      gif.src = beggingGif;
+      popGif();
+      shakeNo();
+
+      const yesBtn = document.getElementById("yes-btn");
+      yesBtn.style.fontSize = Math.min(18 + noClicks * 10, 72) + "px";
+      yesBtn.style.padding = Math.min(12 + noClicks * 4, 40) + "px";
+
+      gif.style.width = Math.min(300 + noClicks * 18, 460) + "px";
+
+      if (noClicks > noMessages.length) {
+        document.getElementById("no-btn").style.display = "none";
+      }
+    }
+
+    function yesClicked() {
+      yesClicks++;
+      const index = Math.min(yesClicks - 1, yesMessages.length - 1);
+      document.getElementById("question").innerHTML = yesMessages[index];
+
+      const gif = document.getElementById("gif");
+
+      if (yesClicks < yesMessages.length) {
+        gif.src = beggingGif;
+        popGif();
+      } else {
+        gif.src = loveGif;
+        popGif();
+
+        document.getElementById("yes-btn").style.display = "none";
+        document.getElementById("no-btn").style.display = "none";
+        document.getElementById("memories").classList.add("show");
+      }
+    }
+  </script>
+
+</body>
+</html>
