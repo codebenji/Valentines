@@ -8,19 +8,22 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      text-align: center;
       background: #800020;
       color: white;
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
+      height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+      margin: 0;
+      overflow: hidden;
       position: relative;
     }
 
-    /* Memories */
+    /* --- 6 portrait memories layer --- */
     .memories {
       position: fixed;
       inset: 0;
@@ -39,11 +42,14 @@
       overflow: hidden;
       box-shadow: 0 10px 28px rgba(0,0,0,0.45);
       border: 2px solid rgba(255,255,255,0.18);
-      transform: scale(0.85);
-      transition: transform 0.7s ease;
+      opacity: 0;
+      transform: scale(0.82);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+      background: rgba(255,255,255,0.06);
     }
 
     .memories.show .memory {
+      opacity: 1;
       transform: scale(1);
     }
 
@@ -51,33 +57,51 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
-    .top-left { top: 6%; left: 6%; transform: rotate(-4deg); }
-    .top-right { top: 6%; right: 6%; transform: rotate(4deg); }
-    .mid-left { top: 35%; left: 4%; transform: rotate(2deg); }
-    .mid-right { top: 35%; right: 4%; transform: rotate(-2deg); }
-    .bottom-left { bottom: 6%; left: 6%; transform: rotate(4deg); }
-    .bottom-right { bottom: 6%; right: 6%; transform: rotate(-4deg); }
+    /* positions */
+    .top-left { top: 6%; left: 6%; transform: rotate(-4deg) scale(0.82); }
+    .top-right { top: 6%; right: 6%; transform: rotate(4deg) scale(0.82); }
+    .mid-left { top: 35%; left: 4%; transform: rotate(2deg) scale(0.82); }
+    .mid-right { top: 35%; right: 4%; transform: rotate(-2deg) scale(0.82); }
+    .bottom-left { bottom: 6%; left: 6%; transform: rotate(4deg) scale(0.82); }
+    .bottom-right { bottom: 6%; right: 6%; transform: rotate(-4deg) scale(0.82); }
+
+    /* when shown, keep rotation but scale to 1 */
+    .memories.show .top-left { transform: rotate(-4deg) scale(1); }
+    .memories.show .top-right { transform: rotate(4deg) scale(1); }
+    .memories.show .mid-left { transform: rotate(2deg) scale(1); }
+    .memories.show .mid-right { transform: rotate(-2deg) scale(1); }
+    .memories.show .bottom-left { transform: rotate(4deg) scale(1); }
+    .memories.show .bottom-right { transform: rotate(-4deg) scale(1); }
 
     @media (max-width: 768px) {
       .memory { width: 90px; }
+      .mid-left { left: 2%; }
+      .mid-right { right: 2%; }
     }
 
     .content {
+      position: relative;
       z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     h1 {
       font-size: 2.2em;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.35);
     }
 
     #gif {
       width: 300px;
       max-width: 92%;
+      margin: 15px 0 20px;
       border-radius: 16px;
-      margin-bottom: 20px;
       box-shadow: 0 10px 24px rgba(0,0,0,0.25);
       transition: width 0.3s ease;
     }
@@ -85,27 +109,28 @@
     .btn-wrap {
       display: flex;
       gap: 14px;
+      flex-wrap: wrap;
       justify-content: center;
     }
 
     button {
       font-size: 1.2em;
       padding: 10px 20px;
-      border-radius: 10px;
       border: none;
+      border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
       min-width: 120px;
     }
 
     #yes-btn { background: #4CAF50; color: white; }
-    #no-btn { background: #ff4d4d; color: white; }
+    #no-btn  { background: #ff4d4d; color: white; }
 
-    .pop { animation: pop 0.35s ease; }
-    @keyframes pop {
-      0% { transform: scale(1); }
-      35% { transform: scale(1.15); }
-      70% { transform: scale(0.96); }
+    .pop { animation: popBounce 0.35s ease; }
+    @keyframes popBounce {
+      0%   { transform: scale(1); }
+      35%  { transform: scale(1.15); }
+      70%  { transform: scale(0.96); }
       100% { transform: scale(1); }
     }
 
@@ -123,27 +148,24 @@
       animation: spin 1s linear infinite;
     }
     @keyframes spin {
-      from { transform: rotate(0); }
+      from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
   </style>
 </head>
 
 <body>
-
-  <!-- Memories -->
   <div class="memories" id="memories">
-    <div class="memory top-left"><img src="image0.jpeg"></div>
-    <div class="memory top-right"><img src="image1.jpeg"></div>
-    <div class="memory mid-left"><img src="image3.jpeg"></div>
-    <div class="memory mid-right"><img src="image4.jpeg"></div>
-    <div class="memory bottom-left"><img src="image5.jpeg"></div>
-    <div class="memory bottom-right"><img src="image6.jpeg"></div>
+    <div class="memory top-left"><img id="m1" alt="memory 1"></div>
+    <div class="memory top-right"><img id="m2" alt="memory 2"></div>
+    <div class="memory mid-left"><img id="m3" alt="memory 3"></div>
+    <div class="memory mid-right"><img id="m4" alt="memory 4"></div>
+    <div class="memory bottom-left"><img id="m5" alt="memory 5"></div>
+    <div class="memory bottom-right"><img id="m6" alt="memory 6"></div>
   </div>
 
-  <!-- Main content -->
   <div class="content">
-    <h1 id="question">Ma you be my Valentine?</h1>
+    <h1 id="question">Ma i know you asked me to be your Valentine?, but i felt i wanted to also ask you, So Ma can i be your valentine?</h1>
 
     <img
       id="gif"
@@ -158,25 +180,35 @@
   </div>
 
   <script>
-    let noClicks = 0;
-    let yesClicks = 0;
+    let noClickCount = 0;
+    let yesClickCount = 0;
 
     const beggingGif = "https://media1.tenor.com/m/ptBL68XAxX8AAAAd/begging.gif";
-    const loveGif =
-      "https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyc2FnOThoNmt2Z2NseXZtNXk5NjVlMGRtY3pyZmM1YWpxMG43bWM3bSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Ta1QurA2fdu36/200w.gif";
+
+    // ✅ LOVE GIF for the final "I LOVE YOU" step
+    const loveGif = "https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyc2FnOThoNmt2Z2NseXZtNXk5NjVlMGRtY3pyZmM1YWpxMG43bWM3bSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Ta1QurA2fdu36/200w.gif";
 
     const noMessages = [
       "Eh eh… you don’t love me? 😭💔",
-      "Ayy nahhh don’t violate me like that 😩",
-      "Ma come on allow me please 😭🙏",
-      "You’re doing me dirty fr… my Valentine 😔💘",
-      "Big boss this one is destiny 😭💍"
+      "Ayy nahhh, dont do this to me 😩",
+      "Ma come on, please😭🙏",
+      "You’re doing me dirty fr… Baby 😔💘",
+      "Big boss, listen… this one is destiny. Just say yes 🥺💍💖"
     ];
 
     const yesMessages = [
       "Hold on… you’re saying yes? 👀💖",
-      "Nahhh this is mad 😭 you’re really my Valentine 🥰",
-      "I LOVE YOU!!! <span class='rotate'>😂</span>💘"
+      "WOAH, your offically my Valentine 🥰",
+      "I LOVE YOU SO SO MUCH!!! <span class='rotate'>💍💖</span>"
+    ];
+
+    const memoryPhotos = [
+      "image0.jpeg",
+      "image1.jpeg",
+      "image3.jpeg",
+      "image4.jpeg",
+      "image5.jpeg",
+      "image6.jpeg"
     ];
 
     function popGif() {
@@ -193,47 +225,64 @@
       noBtn.classList.add("shake");
     }
 
+    function reloadGif(url) {
+      const gif = document.getElementById("gif");
+      gif.src = "";
+      setTimeout(() => {
+        gif.src = url;
+        popGif();
+      }, 10);
+    }
+
+    function showMemories() {
+      document.getElementById("m1").src = memoryPhotos[0];
+      document.getElementById("m2").src = memoryPhotos[1];
+      document.getElementById("m3").src = memoryPhotos[2];
+      document.getElementById("m4").src = memoryPhotos[3];
+      document.getElementById("m5").src = memoryPhotos[4];
+      document.getElementById("m6").src = memoryPhotos[5];
+      document.getElementById("memories").classList.add("show");
+    }
+
     function noClicked() {
-      noClicks++;
-      const index = Math.min(noClicks - 1, noMessages.length - 1);
+      noClickCount++;
+
+      const index = Math.min(noClickCount - 1, noMessages.length - 1);
       document.getElementById("question").innerHTML = noMessages[index];
 
-      const gif = document.getElementById("gif");
-      gif.src = beggingGif;
-      popGif();
+      reloadGif(beggingGif);
       shakeNo();
 
       const yesBtn = document.getElementById("yes-btn");
-      yesBtn.style.fontSize = Math.min(18 + noClicks * 10, 72) + "px";
-      yesBtn.style.padding = Math.min(12 + noClicks * 4, 40) + "px";
+      yesBtn.style.fontSize = Math.min(18 + noClickCount * 10, 72) + "px";
+      yesBtn.style.padding = Math.min(12 + noClickCount * 4, 40) + "px";
 
-      gif.style.width = Math.min(300 + noClicks * 18, 460) + "px";
+      const gif = document.getElementById("gif");
+      gif.style.width = Math.min(300 + noClickCount * 18, 460) + "px";
 
-      if (noClicks > noMessages.length) {
+      if (noClickCount > noMessages.length) {
+        document.getElementById("question").innerHTML =
+          "Okay okay… I give up 😔💔 (unless you press Yes)";
         document.getElementById("no-btn").style.display = "none";
       }
     }
 
     function yesClicked() {
-      yesClicks++;
-      const index = Math.min(yesClicks - 1, yesMessages.length - 1);
+      yesClickCount++;
+
+      const index = Math.min(yesClickCount - 1, yesMessages.length - 1);
       document.getElementById("question").innerHTML = yesMessages[index];
 
-      const gif = document.getElementById("gif");
-
-      if (yesClicks < yesMessages.length) {
-        gif.src = beggingGif;
-        popGif();
-      } else {
-        gif.src = loveGif;
-        popGif();
-
+      // ✅ Use LOVE GIF only on final step
+      if (yesClickCount >= yesMessages.length) {
+        reloadGif(loveGif);
         document.getElementById("yes-btn").style.display = "none";
         document.getElementById("no-btn").style.display = "none";
-        document.getElementById("memories").classList.add("show");
+        showMemories();
+      } else {
+        reloadGif(beggingGif);
       }
     }
   </script>
-
 </body>
 </html>
